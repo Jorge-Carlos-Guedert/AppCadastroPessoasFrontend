@@ -1,0 +1,10 @@
+^C:\USERS\JOCA1\DEV\PROJETOS\ESCALAS\APP_CADASTRO_PESSOAS\WINDOWS\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/joca1/dev/projetos/escalas/app_cadastro_pessoas/windows -BC:/Users/joca1/dev/projetos/escalas/app_cadastro_pessoas/build/windows/x64 --check-stamp-file C:/Users/joca1/dev/projetos/escalas/app_cadastro_pessoas/build/windows/x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

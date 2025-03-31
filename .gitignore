@@ -1,0 +1,1 @@
+-e "build/\n.dart_tool/\n.flutter-plugins\n.flutter-plugins-dependencies\n.packages\n.env" 

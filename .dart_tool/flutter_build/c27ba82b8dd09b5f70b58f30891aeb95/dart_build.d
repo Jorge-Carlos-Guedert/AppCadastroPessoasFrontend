@@ -1,0 +1,1 @@
+ C:\\Users\\joca1\\dev\\projetos\\escalas\\app_cadastro_pessoas\\.dart_tool\\flutter_build\\c27ba82b8dd09b5f70b58f30891aeb95\\dart_build_result.json: 

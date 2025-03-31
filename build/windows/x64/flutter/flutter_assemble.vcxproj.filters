@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\joca1\dev\projetos\escalas\app_cadastro_pessoas\build\windows\x64\CMakeFiles\f72101389a87e64db8c1fb73b1d0ce11\flutter_windows.dll.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\joca1\dev\projetos\escalas\app_cadastro_pessoas\build\windows\x64\CMakeFiles\6d8d678565b47fd16be0f48eb1132230\flutter_assemble.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\joca1\dev\projetos\escalas\app_cadastro_pessoas\windows\flutter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\joca1\dev\projetos\escalas\app_cadastro_pessoas\build\windows\x64\flutter\CMakeFiles\flutter_assemble" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D5C132F0-354B-332B-88CB-A827FA6A6DB9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
