@@ -1,1 +1,1 @@
--e "build/\n.dart_tool/\n.flutter-plugins\n.flutter-plugins-dependencies\n.packages\n.env" 
+-e "build/\n.dart_tool/\n.flutter-plugins\n.flutter-plugins-dependencies\n.packages\n.env\n/android/\n/ios/\n/lib/generated_plugin_registrant.dart" 
