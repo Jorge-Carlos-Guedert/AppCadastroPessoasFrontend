@@ -130,6 +130,8 @@ class Calendario {
       'diasSemana': diasSemana.map((d) => d.toJson()).toList(),
       'datasEspecificas': datasEspecificas.map((d) => d.toJson()).toList(),
     };
+
+    
   }
   }
 class Horario {

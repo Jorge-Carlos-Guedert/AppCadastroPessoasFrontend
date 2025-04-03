@@ -29,6 +29,7 @@ class _Administrador_Pessoas_ScreenState extends State<Administrador_Pessoas_Scr
     return Scaffold(
       appBar: AppBar(
         title: Text('Administrar Pessoas'),
+        centerTitle: true,
         // Botão de voltar no canto superior esquerdo
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Ícone de voltar

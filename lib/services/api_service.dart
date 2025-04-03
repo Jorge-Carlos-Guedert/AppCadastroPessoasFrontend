@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:app_cadastro_pessoas/models/configurar_calendarios.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -87,6 +89,7 @@ static Future<List<Map<String, dynamic>>> getPessoas() async {
       'id': pessoa['id'],
       'nome': pessoa['nome'],
       'email': pessoa['email'],
+      'telefone': pessoa['telefone'],
       'senha': pessoa['senha'],
       'isAdmin': pessoa['isAdmin'],
     }).toList();
@@ -192,7 +195,7 @@ static Future<void> atualizarPessoa(int id, Map<String, dynamic> dados) async {
 }
 
 Future<void> limparCalendarioExistente(int ano, int mes) async {
-    final url = Uri.parse('$baseUrl/api/calendario/$ano/$mes/limpar');
+    final url = Uri.parse('$baseUrl/calendario/$ano/$mes/limpar');
     final response = await http.delete(url);
 
     if (response.statusCode != 200 && response.statusCode != 404) {
@@ -201,7 +204,7 @@ Future<void> limparCalendarioExistente(int ano, int mes) async {
   }
 
 static Future<List<ConfigurarCalendarios>> fetchCalendarios() async {
-  final response = await http.get(Uri.parse('$baseUrl/api/ConfigurarCalendarios'));
+  final response = await http.get(Uri.parse('$baseUrl/ConfigurarCalendarios'));
   if (response.statusCode == 200) {
     var jsonData = jsonDecode(response.body);
     return (jsonData as List).map((h) => ConfigurarCalendarios.fromJson(h)).toList();
@@ -213,31 +216,53 @@ static Future<List<ConfigurarCalendarios>> fetchCalendarios() async {
 
 static Future<void> salvarHorarios(List<ConfigurarCalendarios> horarios) async {
   final response = await http.post(
-    Uri.parse('$baseUrl/api/ConfigurarCalendarios'),
+    Uri.parse('$baseUrl/ConfigurarCalendarios'),
     headers: {'Content-Type': 'application/json'},
+    
     body: jsonEncode(horarios.map((h) => h.toJson()).toList()),
   );
+  
 
   if (response.statusCode != 200) {
     throw Exception('Falha ao salvar horários');
   }
 }
 
+// No seu ApiService
 Future<void> salvarCalendario(Calendario calendario) async {
-    final url = Uri.parse('$baseUrl/calendario');
+  try {
     final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$baseUrl/calendario'),
+      headers: {
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer $token', // Adicione se usar autenticação
+      },
       body: jsonEncode(calendario.toJson()),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Falha ao salvar calendário: ${response.body}');
+    debugPrint('Status Code: ${response.statusCode}');
+    debugPrint('Resposta: ${response.body}');
+
+    if (response.statusCode == 400) {
+      final errorData = jsonDecode(response.body);
+      throw Exception('Erro de validação: ${errorData['errors']}');
+    } else if (response.statusCode == 500) {
+      final errorData = jsonDecode(response.body);
+      throw Exception('Erro no servidor: ${errorData['error']}');
+    } else if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Erro ${response.statusCode}: ${response.body}');
     }
+  } on SocketException {
+    throw Exception('Sem conexão com o servidor');
+  } on FormatException {
+    throw Exception('Erro no formato dos dados');
+  } catch (e) {
+    throw Exception('Erro ao comunicar com o servidor: $e');
   }
+}
 
   Future<Calendario?> carregarCalendario(int ano, int mes) async {
-    final url = Uri.parse('$baseUrl/api/calendario/$ano/$mes');
+    final url = Uri.parse('$baseUrl/calendario/$ano/$mes');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

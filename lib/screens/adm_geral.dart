@@ -26,6 +26,7 @@ class _AdmGeralScreenState extends State<AdmGeralScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Administrador Geral'),
+        centerTitle: true,
       ),
       body: Column(
         children: [

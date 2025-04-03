@@ -40,6 +40,7 @@ class _EditarPessoaScreenState extends State<EditarPessoaScreen> {
               children: <Widget>[
                 Text('Nome: ${dadosAtualizados['nome']}'),
                 Text('Email: ${dadosAtualizados['email']}'),
+                Text('Telefone: ${dadosAtualizados['telefone']}'),
                 Text('Senha: ${dadosAtualizados['senha']}'),
                 Text('Administrador: ${dadosAtualizados['isAdmin']}'),
             
@@ -123,8 +124,8 @@ class _EditarPessoaScreenState extends State<EditarPessoaScreen> {
                 },
               ),
               TextFormField(
-                controller: _senhaController,
-                decoration: InputDecoration(labelText: 'Senha'),
+                controller: _telefoneController,
+                decoration: InputDecoration(labelText: 'Telefone'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

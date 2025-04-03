@@ -20,6 +20,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cadastrar Pessoas'),
+        centerTitle: true,
         // Botão de voltar no canto superior esquerdo
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Ícone de voltar

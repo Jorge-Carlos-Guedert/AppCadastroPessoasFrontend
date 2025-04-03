@@ -3,6 +3,7 @@ import 'package:app_cadastro_pessoas/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cadastro_pessoas/models/configurar_calendarios.dart';
 import 'package:app_cadastro_pessoas/screens/visualizacao_calendario_screen.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -49,6 +50,7 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Configuração de Calendário'),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.save),
@@ -136,7 +138,7 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
 
   Widget _buildPrimeiroDiaSemanaInput() {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(labelText: 'Primeiro dia da semana'),
+      decoration: InputDecoration(labelText: 'Dia 1 é que dia da semana ?'),
       value: primeiroDiaSemana,
       items: diasDaSemana.map((dia) {
         return DropdownMenuItem(
@@ -474,29 +476,85 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
   }
 
   Future<void> _salvarCalendario() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      
-      final calendario = Calendario(
-        ano: ano!,
-        mes: mes!,
-        primeiroDiaSemana: primeiroDiaSemana!,
-        diasSemana: diasSemana,
-        datasEspecificas: datasEspecificas,
-      );
-      
-      try {
-        await apiService.salvarCalendario(calendario);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Calendário salvo com sucesso!')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar calendário: $e')),
-        );
-      }
-    }
+  // Verifica se o formulário é válido
+  if (!_formKey.currentState!.validate()) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Corrija os erros no formulário antes de salvar')),
+    );
+    return;
   }
+  
+  // Salva os dados do formulário
+  _formKey.currentState!.save();
+  
+  // Verificação adicional de campos obrigatórios
+  if (ano == null || mes == null || primeiroDiaSemana == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Preencha todos os campos obrigatórios')),
+    );
+    return;
+  }
+  
+  // Verifica se há pelo menos um horário configurado
+  final hasAnyHorarios = diasSemana.any((dia) => dia.horarios.isNotEmpty) || 
+                       datasEspecificas.any((data) => data.horarios.isNotEmpty);
+  
+  if (!hasAnyHorarios) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Adicione pelo menos um horário em algum dia')),
+    );
+    return;
+  }
+  
+  // Mostra indicador de carregamento
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => Center(child: CircularProgressIndicator()),
+  );
+  
+  try {
+    // Prepara o objeto calendário
+    final calendario = Calendario(
+      ano: ano!,
+      mes: mes!,
+      primeiroDiaSemana: primeiroDiaSemana!,
+      diasSemana: diasSemana.where((dia) => dia.horarios.isNotEmpty).toList(),
+      datasEspecificas: datasEspecificas.where((data) => data.horarios.isNotEmpty).toList(),
+    );
+    
+    // Tenta salvar
+    await apiService.salvarCalendario(calendario);
+    
+    // Fecha o diálogo de carregamento
+    Navigator.of(context).pop();
+    
+    // Mostra mensagem de sucesso
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Calendário salvo com sucesso!')),
+    );
+    
+  } catch (e, stackTrace) {
+    // Fecha o diálogo de carregamento
+    Navigator.of(context).pop();
+    
+    // Log para depuração
+    debugPrint('Erro ao salvar calendário: $e');
+    debugPrint('Stack trace: $stackTrace');
+    
+    // Mensagem amigável para o usuário
+    String errorMessage = 'Erro ao salvar calendário';
+    if (e is http.ClientException) {
+      errorMessage = 'Erro de conexão com o servidor';
+    } else if (e is FormatException) {
+      errorMessage = 'Erro no formato dos dados';
+    }
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$errorMessage: ${e.toString()}')),
+    );
+  }
+}
 
   Future<void> _visualizarCalendario() async {
   if (_formKey.currentState!.validate()) {
